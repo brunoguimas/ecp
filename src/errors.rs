@@ -1,8 +1,6 @@
 use std::error::Error;
 use std::{fmt, process};
 
-use crate::builder::App;
-
 #[derive(Debug)]
 pub enum AppError {
     IoError(std::io::Error),

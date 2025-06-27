@@ -1,4 +1,4 @@
-use ecp::builder::Flag;
+use ecp::builder::*;
 
 #[test]
 fn full_flag() {
@@ -6,5 +6,5 @@ fn full_flag() {
         .description("Build artifacts in release mode, with optimizations")
         .short('r');
 
-    assert_matches!(release.name.as_str(), "release")
+    assert_eq!(release.get_long().as_str(), "release")
 }

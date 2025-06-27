@@ -23,4 +23,16 @@ impl Flag {
         self.short = Some(short);
         self
     }
+
+    pub fn get_long(&self) -> &String {
+        &self.long
+    }
+
+    pub fn get_short(&self) -> &Option<char> {
+        &self.short
+    }
+
+    pub fn get_description(&self) -> &Option<String> {
+        &self.description
+    }
 }

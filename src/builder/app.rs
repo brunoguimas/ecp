@@ -42,14 +42,30 @@ impl App {
         let command = get_command(&self, &args)?;
         let subcommand = get_subcommand(&self, &args)?;
         let flags = get_flags(&self, &args)?;
-        let value = get_value(&self, &args)?;
+        let values = get_values(&args, &subcommand, &flags)?;
 
         Ok(CommandParsed {
             command,
             subcommand,
             flags,
-            value,
+            values,
         })
+    }
+
+    pub fn get_name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn get_version(&self) -> &Option<String> {
+        &self.version
+    }
+
+    pub fn get_description(&self) -> &Option<String> {
+        &self.description
+    }
+
+    pub fn get_commands(&self) -> &Vec<Command> {
+        &self.commands
     }
 }
 
@@ -85,5 +101,54 @@ fn get_subcommand(app: &App, args: &[String]) -> Result<Option<String>, AppError
     Ok(Some(subcommand_name.to_string()))
 }
 
-// TODO
-fn get_flags(app: &App, args: &[String]) -> Result<Option<Vec<String>>, AppError> {}
+fn get_flags(app: &App, args: &[String]) -> Result<Vec<String>, AppError> {
+    let command_name = &args[1];
+    let subcommand_name = &args[2];
+    let command = app.commands.iter().find(|cmd| cmd.name == *command_name);
+
+    let scope = match command
+        .unwrap()
+        .subcommands
+        .iter()
+        .find(|subcmd| subcmd.name == *subcommand_name)
+    {
+        Some(subcmd) => subcmd,
+        None => command.unwrap(),
+    };
+
+    let mut found_flags = Vec::new();
+
+    for arg in args {
+        if arg.starts_with('-') {
+            let arg = arg.trim_start_matches("-");
+
+            if let Some(flag) = scope
+                .flags
+                .iter()
+                .find(|flag| flag.long == *arg || flag.short == arg.chars().next())
+            {
+                found_flags.push(flag);
+            };
+        }
+    }
+
+    if found_flags.len() == 0 {
+        return Err(AppError::InvalidFlag(format!("Flags not found")));
+    };
+
+    Ok(found_flags.iter().map(|flag| flag.long.clone()).collect())
+}
+
+fn get_values(
+    args: &[String],
+    subcommand: &Option<String>,
+    flags: &[String],
+) -> Result<Vec<String>, AppError> {
+    let skip_count = if let Some(_) = subcommand {
+        3 + flags.len()
+    } else {
+        2 + flags.len()
+    };
+
+    Ok(args.iter().skip(skip_count).map(|s| s.to_owned()).collect())
+}

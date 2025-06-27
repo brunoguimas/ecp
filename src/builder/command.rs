@@ -32,4 +32,20 @@ impl Command {
         self.flags.push(flag);
         self
     }
+
+    pub fn get_name(&self) -> &String {
+        &self.name
+    }
+
+    pub fn get_description(&self) -> &Option<String> {
+        &self.description
+    }
+
+    pub fn get_subcommands(&self) -> &Vec<Command> {
+        &self.subcommands
+    }
+
+    pub fn get_flags(&self) -> &Vec<Flag> {
+        &self.flags
+    }
 }

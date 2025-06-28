@@ -6,5 +6,6 @@ fn full_flag() {
         .description("Build artifacts in release mode, with optimizations")
         .short('r');
 
-    assert_eq!(release.get_long().as_str(), "release")
+    assert_eq!(release.get_long(), "release".to_string());
+    assert_eq!(release.get_short(), Some('r'))
 }

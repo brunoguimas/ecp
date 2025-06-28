@@ -11,7 +11,7 @@ pub enum AppError {
 }
 
 impl AppError {
-    pub fn exit(&self) {
+    pub fn exit(&self) -> ! {
         eprintln!("{}", self);
         process::exit(1);
     }

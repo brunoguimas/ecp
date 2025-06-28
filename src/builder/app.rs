@@ -1,6 +1,9 @@
+use std::env;
+
 use crate::builder::Command;
 use crate::errors::AppError;
 use crate::parser::CommandParsed;
+use crate::parser::utils::*;
 
 pub struct App {
     pub(crate) name: String,
@@ -9,6 +12,7 @@ pub struct App {
     pub(crate) commands: Vec<Command>,
 }
 
+// Parsing
 impl App {
     pub fn new(name: &str) -> App {
         App {
@@ -52,103 +56,31 @@ impl App {
         })
     }
 
-    pub fn get_name(&self) -> &String {
+    pub fn run(&self) -> CommandParsed {
+        let args: Vec<String> = env::args().collect();
+
+        match self.parse_args(&args) {
+            Ok(parsed) => parsed,
+            Err(e) => e.exit(),
+        }
+    }
+}
+
+// Getters
+impl App {
+    pub fn get_name(&self) -> &str {
         &self.name
     }
 
-    pub fn get_version(&self) -> &Option<String> {
-        &self.version
+    pub fn get_version(&self) -> Option<&str> {
+        self.version.as_deref()
     }
 
-    pub fn get_description(&self) -> &Option<String> {
-        &self.description
+    pub fn get_description(&self) -> Option<&str> {
+        self.description.as_deref()
     }
 
-    pub fn get_commands(&self) -> &Vec<Command> {
+    pub fn get_commands(&self) -> &[Command] {
         &self.commands
     }
-}
-
-fn get_command(app: &App, args: &[String]) -> Result<String, AppError> {
-    let command_name = &args[1];
-
-    if !app.commands.iter().any(|cmd| cmd.name == *command_name) {
-        return Err(AppError::InvalidCommand(format!(
-            "Command not found: {}",
-            command_name
-        )));
-    };
-
-    Ok(command_name.to_string())
-}
-
-fn get_subcommand(app: &App, args: &[String]) -> Result<Option<String>, AppError> {
-    let subcommand_name = if let Some(subcmd) = args.get(2) {
-        subcmd
-    } else {
-        return Ok(None);
-    };
-
-    for cmd in app.commands.iter() {
-        if !cmd.subcommands.iter().any(|subcmd| subcmd.name == args[2]) {
-            return Err(AppError::InvalidCommand(format!(
-                "Subcommand not found: {}",
-                subcommand_name
-            )));
-        }
-    }
-
-    Ok(Some(subcommand_name.to_string()))
-}
-
-fn get_flags(app: &App, args: &[String]) -> Result<Vec<String>, AppError> {
-    let command_name = &args[1];
-    let subcommand_name = &args[2];
-    let command = app.commands.iter().find(|cmd| cmd.name == *command_name);
-
-    let scope = match command
-        .unwrap()
-        .subcommands
-        .iter()
-        .find(|subcmd| subcmd.name == *subcommand_name)
-    {
-        Some(subcmd) => subcmd,
-        None => command.unwrap(),
-    };
-
-    let mut found_flags = Vec::new();
-
-    for arg in args {
-        if arg.starts_with('-') {
-            let arg = arg.trim_start_matches("-");
-
-            if let Some(flag) = scope
-                .flags
-                .iter()
-                .find(|flag| flag.long == *arg || flag.short == arg.chars().next())
-            {
-                found_flags.push(flag);
-            };
-        }
-    }
-
-    if found_flags.len() == 0 {
-        return Err(AppError::InvalidFlag(format!("Flags not found")));
-    };
-
-    Ok(found_flags.iter().map(|flag| flag.long.clone()).collect())
-}
-
-fn get_values(
-    args: &[String],
-    subcommand: &Option<String>,
-    flags: &[String],
-) -> Result<Vec<String>, AppError> {
-    let skip_count = if let Some(_) = subcommand {
-        3 + flags.len()
-    } else {
-        2 + flags.len()
-    };
-
-    Ok(args.iter().skip(skip_count).map(|s| s.to_owned()).collect())
 }

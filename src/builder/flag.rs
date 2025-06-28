@@ -1,4 +1,4 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Flag {
     pub(crate) long: String,
     pub(crate) short: Option<char>,
@@ -24,15 +24,15 @@ impl Flag {
         self
     }
 
-    pub fn get_long(&self) -> &String {
+    pub fn get_long(&self) -> &str {
         &self.long
     }
 
-    pub fn get_short(&self) -> &Option<char> {
-        &self.short
+    pub fn get_short(&self) -> Option<char> {
+        self.short
     }
 
-    pub fn get_description(&self) -> &Option<String> {
-        &self.description
+    pub fn get_description(&self) -> Option<&str> {
+        self.description.as_deref()
     }
 }

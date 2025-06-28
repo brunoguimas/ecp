@@ -1,6 +1,6 @@
 use crate::builder::flag::Flag;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Command {
     pub(crate) name: String,
     pub(crate) description: Option<String>,
@@ -33,19 +33,19 @@ impl Command {
         self
     }
 
-    pub fn get_name(&self) -> &String {
+    pub fn get_name(&self) -> &str {
         &self.name
     }
 
-    pub fn get_description(&self) -> &Option<String> {
-        &self.description
+    pub fn get_description(&self) -> Option<&str> {
+        self.description.as_deref()
     }
 
-    pub fn get_subcommands(&self) -> &Vec<Command> {
+    pub fn get_subcommands(&self) -> &[Command] {
         &self.subcommands
     }
 
-    pub fn get_flags(&self) -> &Vec<Flag> {
+    pub fn get_flags(&self) -> &[Flag] {
         &self.flags
     }
 }

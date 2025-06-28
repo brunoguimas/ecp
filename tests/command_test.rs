@@ -25,67 +25,44 @@ fn full_command_build() {
 
     // Command
     assert_eq!(cargo.get_name(), "cargo");
-    assert_eq!(
-        cargo.get_description().as_deref(),
-        Some("Rust's package manager")
-    );
+    assert_eq!(cargo.get_description(), Some("Rust's package manager"));
 
     // Subcommands
-    assert_eq!(cargo.get_subcommands()[0].get_name().as_str(), "build");
+    assert_eq!(cargo.get_subcommands()[0].get_name(), "build");
     assert_eq!(
-        cargo.get_subcommands()[0]
-            .get_description()
-            .as_ref()
-            .unwrap(),
-        "Compile the current package"
+        cargo.get_subcommands()[0].get_description(),
+        Some("Compile the current package")
     );
-    assert_eq!(cargo.get_subcommands()[1].get_name().as_str(), "run");
+    assert_eq!(cargo.get_subcommands()[1].get_name(), "run");
     assert_eq!(
-        cargo.get_subcommands()[1]
-            .get_description()
-            .as_ref()
-            .unwrap(),
-        "Run a binary or example of the local package"
+        cargo.get_subcommands()[1].get_description(),
+        Some("Run a binary or example of the local package")
     );
 
     // Flags
     assert_eq!(
-        cargo.get_subcommands()[0].get_flags()[0]
-            .get_long()
-            .as_str(),
+        cargo.get_subcommands()[0].get_flags()[0].get_long(),
         "release"
     );
     assert_eq!(
-        cargo.get_subcommands()[0].get_flags()[0]
-            .get_description()
-            .as_ref()
-            .unwrap(),
-        "Build artifacts in release mode, with optimizations"
+        cargo.get_subcommands()[0].get_flags()[0].get_description(),
+        Some("Build artifacts in release mode, with optimizations")
     );
     assert_eq!(
-        cargo.get_subcommands()[0].get_flags()[0]
-            .get_short()
-            .unwrap(),
-        'r'
+        cargo.get_subcommands()[0].get_flags()[0].get_short(),
+        Some('r')
     );
     assert_eq!(
-        cargo.get_subcommands()[1].get_flags()[0]
-            .get_long()
-            .as_str(),
+        cargo.get_subcommands()[1].get_flags()[0].get_long(),
         "release"
     );
     assert_eq!(
-        cargo.get_subcommands()[1].get_flags()[0]
-            .get_description()
-            .as_ref()
-            .unwrap(),
-        "Build artifacts in release mode, with optimizations"
+        cargo.get_subcommands()[1].get_flags()[0].get_description(),
+        Some("Build artifacts in release mode, with optimizations")
     );
     assert_eq!(
-        cargo.get_subcommands()[1].get_flags()[0]
-            .get_short()
-            .unwrap(),
-        'r'
+        cargo.get_subcommands()[1].get_flags()[0].get_short(),
+        Some('r')
     );
 }
 
@@ -104,40 +81,27 @@ fn one_subcommand_build() {
         );
 
     // Command
-    assert_eq!(cargo.get_name().as_str(), "cargo");
-    assert_eq!(
-        cargo.get_description().as_ref().unwrap(),
-        "Rust's package manager"
-    );
+    assert_eq!(cargo.get_name(), "cargo");
+    assert_eq!(cargo.get_description(), Some("Rust's package manager"));
 
     // Subcommand
-    assert_eq!(cargo.get_subcommands()[0].get_name().as_str(), "build");
+    assert_eq!(cargo.get_subcommands()[0].get_name(), "build");
     assert_eq!(
-        cargo.get_subcommands()[0]
-            .get_description()
-            .as_ref()
-            .unwrap(),
-        "Compile the current package"
+        cargo.get_subcommands()[0].get_description(),
+        Some("Compile the current package")
     );
 
     // Flag
     assert_eq!(
-        cargo.get_subcommands()[0].get_flags()[0]
-            .get_long()
-            .as_str(),
+        cargo.get_subcommands()[0].get_flags()[0].get_long(),
         "release"
     );
     assert_eq!(
-        cargo.get_subcommands()[0].get_flags()[0]
-            .get_description()
-            .as_ref()
-            .unwrap(),
-        "Build artifacts in release mode, with optimizations"
+        cargo.get_subcommands()[0].get_flags()[0].get_description(),
+        Some("Build artifacts in release mode, with optimizations")
     );
     assert_eq!(
-        cargo.get_subcommands()[0].get_flags()[0]
-            .get_short()
-            .unwrap(),
-        'r'
+        cargo.get_subcommands()[0].get_flags()[0].get_short(),
+        Some('r')
     );
 }

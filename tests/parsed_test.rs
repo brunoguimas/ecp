@@ -1,15 +1,16 @@
 use ecp::builder::{App, Command, Flag};
+use std::ffi;
 
 #[test]
 fn full_parsed() {
-    let args = vec![
-        "ecp".to_string(),
-        "cargo".to_string(),
-        "run".to_string(),
-        "-r".to_string(),
-        "--locked".to_string(),
-        "port".to_string(),
-        "8080".to_string(),
+    let args: Vec<ffi::OsString> = vec![
+        "ecp".into(),
+        "cargo".into(),
+        "run".into(),
+        "-r".into(),
+        "--locked".into(),
+        "port".into(),
+        "8080".into(),
     ];
 
     let cli = App::new("Rust")
@@ -43,10 +44,11 @@ fn full_parsed() {
                         ),
                 ),
         )
-        .parse_args(&args)
+        .try_parse_args(args)
         .unwrap();
 
     assert_eq!(cli.get_command(), "cargo");
+
     assert_eq!(cli.get_subcommand(), Some("run"));
     assert_eq!(cli.get_flags().any(|f| f == "release"), true);
     assert_eq!(cli.get_flags().any(|f| f == "locked"), true);

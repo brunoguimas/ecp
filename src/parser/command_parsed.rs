@@ -1,14 +1,18 @@
+#[allow(unused_imports)]
+use crate::builder::*;
 /// Represents a CLI argument broken into simple strings.
 ///
-/// This struct is the output of `App::run()` or `App::parse_args()`, providing a simple
+/// This struct is the output of [`App::run()`] or [`App::try_parse_args()`], providing a simple
 /// way to access the components of a user's CLI input.
 ///
-/// The `App::run()` method is the recommended way to parse CLI arguments, it
-/// uses `std::env::args()` as the CLI input, which removes the necessity to
+/// The [`App::run()`] method is the recommended way to parse CLI arguments, it
+/// uses [`std::env::args_os()`] as the CLI input, which removes the need to
 /// manually handle user input.
+/// You can also use [`App::try_run()`] to manually handle errors that may occur during parsing
+/// You can use [`App::parse()`] or [`App::try_parse()`] to manually handle user input.
 ///
 /// # Example:
-/// ```ignore
+/// ```rust,no_run
 /// use ecp::builder::*;
 ///
 /// let cli = App::new("Rust")
@@ -54,33 +58,9 @@
 /// assert_eq!(cli.get_values().any(|f| f == "8080"), true);
 /// ```
 pub struct CommandParsed {
-    /// Represents the main command in the CLI argument.
-    ///
-    /// # Example:
-    /// In `cargo run`, the command is `"cargo"`.
     pub(crate) command: String,
-
-    /// Represents the optional subcommand in the CLI argument.
-    ///
-    /// # Example:
-    /// In `cargo run`, the subcommand is Some("run").
     pub(crate) subcommand: Option<String>,
-
-    /// Represents multiple flags present in the CLI argument.
-    ///
-    /// Flags can be short flags or long flags.
-    /// Short flags starts with `-` and long flags starts with `--`.
-    ///
-    /// Example:
-    /// In `cargo run --release`, the flags are ["release"].
-    /// In `cargo build -p`, the flags are ["p"].
     pub(crate) flags: Vec<String>,
-
-    /// Represents multiple values present in the CLI argument.
-    /// Values are usually non-flags strings, often arguments to flags
-    ///
-    /// # Example:
-    /// In `cargo run --bin my_binary`, the values are ["my_binary"].
     pub(crate) values: Vec<String>,
 }
 
